@@ -156,7 +156,8 @@ router.get('/post', function(req, res) {
 router.post('/post', checkLogin);
 router.post('/post', function (req, res) {
     var currentUser = req.session.user,
-        post = new Post(currentUser.name, req.body.title, req.body.post);
+        tags = [req.body.tag1, req.body.tag2, req.body.tag3],
+        post = new Post(currentUser.name, req.body.title, tags, req.body.post);
     post.save(function (err) {
         if (err) {
             req.flash('error', err);
@@ -298,7 +299,6 @@ router.post('/edit/:name/:day/:title', function (req, res) {
             // 出错，返回文章页
             return res.redirect(url);
         }
-        console.log(req.body.post);
         req.flash('success', '修改成功！');
         // 成功，返回文章页
         res.redirect(url);
@@ -341,6 +341,38 @@ router.post('/u/:name/:day/:title', function (req, res) {
     });
 });
 
+// 标签
+router.get('/tags', function (req, res) {
+    Post.getTags(function (err, posts) {
+        if (err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.render('tags', {
+            title: '标签',
+            posts: posts,
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
+    });
+});
+
+router.get('/tags/:tag', function (req, res) {
+    Post.getTag(req.params.tag, function (err, posts) {
+        if (err) {
+            req.flash('error', err);
+            return res.redirect('/');
+        }
+        res.render('tag', {
+            title: 'TAG:' + req.params.tag,
+            posts: posts,
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
+    });
+});
 
 // 登录检查
 function checkLogin(req, res, next) {
@@ -353,7 +385,6 @@ function checkLogin(req, res, next) {
 
 function checkNotLogin(req, res, next) {
     if (req.session.user) {
-        console.log(1111111);
         req.flash('error', '已登录');
         // 返回之前的页面
         res.redirect('back');
