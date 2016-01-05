@@ -391,6 +391,11 @@ router.get('/search', function (req, res) {
     });
 });
 
+// 404
+router.use(function (req, res) {
+    res.render('404');
+});
+
 // 登录检查
 function checkLogin(req, res, next) {
     if (!req.session.user) {
