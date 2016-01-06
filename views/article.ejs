@@ -5,12 +5,62 @@
         <span><a class="edit" href="/edit/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">编辑</a></span>
         <span><a class="edit" href="/remove/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">删除</a></span>
     <% } %>
+    <!-- 转载功能是否可用逻辑 -->
+    <!-- 如果用户是游客，或者是该文章的目前作者，或者是该文章的上一级作者，或者已经转载过该文章的用户，都会将 flag 设置为 0 ，即不显示 转载 链接，即不能转载该文章。最后判断 flag 为 1 时才会显示 转载 链接 -->
+    <!-- 此转载逻辑只保留三层关系，转载后的内容“相当于"自己的文章，可编辑删除-->
+    <!-- 还有一种转载类型就是像qq空间那种，转载的文章没有编辑权限，而转载数统计功能也就一样-->
+    <!-- 逻辑代码： -->
+    <!-- var flag = 1;
+    // 排除游客和该文章的目前作者
+    if (user && user !== post.name) {
+        // 上级作者
+        if (post.reprint_info.reprint_from && user.name === post.reprint_info.reprint_from.name) {
+            flag = 0;
+        }
+        // 下级转载用户
+        if (post.reprint_info.reprint_to) {
+            post.reprint_info.reprint_to.forEach(function(reprint_to, index) {
+                if (user.name === reprint_to.name) {
+                    flag = 0;
+                }
+            });
+        }
+    } else {
+        flag = 0;
+    } -->
+    <% var flag = 1 %>
+    <% if (user && (user.name != post.name)) { %>
+      <% if ((post.reprint_info.reprint_from != undefined) && (user.name == post.reprint_info.reprint_from.name)) { %>
+        <% flag = 0 %>
+      <% } %>
+      <% if ((post.reprint_info.reprint_to != undefined)) { %>
+        <% post.reprint_info.reprint_to.forEach(function (reprint_to, index) { %>
+          <% if (user.name == reprint_to.name) { %>
+            <% flag = 0 %>
+          <% } %>
+        <% }) %>
+      <% } %>
+    <% } else { %>
+      <% flag = 0 %>
+    <% } %>
+    <% if (flag) { %>
+      <span><a class="edit" href="/reprint/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">转载</a></span>
+    <% } %>
 </p>
 <p class="info">
     作者：<a href="/u/<%= post.name %>"><%= post.name %></a> |
     日期：<%= post.time.minute %>
 </p>
 <p><%- post.post %></p>
-<p class="info">阅读：<%= post.pv %> | 评论：<%= post.comments.length %></p>
+<p class="info">
+  阅读：<%= post.pv %> |
+  评论：<%= post.comments.length %> |
+  转载：
+  <% if (post.reprint_info.reprint_to) { %>
+    <%= post.reprint_info.reprint_to.length %>
+  <% } else { %>
+    <%= 0 %>
+  <% } %>
+</p>
 <%- include comment %>
 <%- include footer %>
