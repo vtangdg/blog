@@ -272,6 +272,7 @@ Post.getArchive = function(callback) {
             }
             // 返回只包含name、time、title属性的文档组成的存档数组
             collection.find({}, {
+                '_id': 1,
                 'name': 1,
                 'time': 1,
                 'title': 1
