@@ -2,8 +2,8 @@
 <p>
     <!-- 用户登陆且点击自己的文章才显示编辑删除 -->
     <% if (user && (user.name == post.name)) { %>
-        <span><a class="edit" href="/edit/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">编辑</a></span>
-        <span><a class="edit" href="/remove/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">删除</a></span>
+        <span><a class="edit" href="/edit/<%= post._id %>">编辑</a></span>
+        <span><a class="edit" href="/remove/<%= post._id %>">删除</a></span>
     <% } %>
     <!-- 转载功能是否可用逻辑 -->
     <!-- 如果用户是游客，或者是该文章的目前作者，或者是该文章的上一级作者，或者已经转载过该文章的用户，都会将 flag 设置为 0 ，即不显示 转载 链接，即不能转载该文章。最后判断 flag 为 1 时才会显示 转载 链接 -->
@@ -44,7 +44,7 @@
       <% flag = 0 %>
     <% } %>
     <% if (flag) { %>
-      <span><a class="edit" href="/reprint/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">转载</a></span>
+      <span><a class="edit" href="/reprint/<%= post._id %>">转载</a></span>
     <% } %>
 </p>
 <p class="info">

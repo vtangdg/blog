@@ -7,7 +7,7 @@
     <p><%- comment.content %></p>
 <% }) %>
 
-<form method="post" action="/u/<%= post.name %>/<%= post.time.day %>/<%= post.title %>">
+<form method="post" action="/u/<%= post._id %>">
 <% if (user) { %>
     姓名：<input type="text" name="name" value="<%= user.name %>" /><br />
     邮箱：<input type="text" name="email" value="<%= user.email %>" /><br />

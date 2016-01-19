@@ -1,5 +1,6 @@
 var mongodb = require('./db');
 var markdown = require('markdown').markdown;
+var ObjectID = require('mongodb').ObjectID;
 
 function Post(name, title, tags, post) {
     this.name = name;
@@ -96,7 +97,7 @@ Post.getAll = function(name, callback) {
 };
 
 // 获取一篇文章
-Post.getOne = function(name, day, title, callback) {
+Post.getOne = function(_id, callback) {
     mongodb.open(function(err, db) {
         if (err) {
             return callback(err);
@@ -106,11 +107,9 @@ Post.getOne = function(name, day, title, callback) {
                 mongodb.close();
                 return callback(err);
             }
-            // 根据用户名、发表日期及文章名进行查询
+            // 根据文章的唯一id进行查询
             collection.findOne({
-                'name': name,
-                'time.day': day,
-                'title': title,
+                '_id': new ObjectID(_id)
             }, function (err, doc) {
                 if (err) {
                     mongodb.close();
@@ -119,9 +118,7 @@ Post.getOne = function(name, day, title, callback) {
                 if (doc) {
                     // 每访问一次,pv值增加1
                     collection.update({
-                        'name': name,
-                        'time.day': day,
-                        'title': title
+                        '_id': new ObjectID(_id)
                     }, {
                         $inc: {'pv': 1}
                     }, function (err) {
@@ -143,7 +140,7 @@ Post.getOne = function(name, day, title, callback) {
 };
 
 // 返回原始发表的内容
-Post.edit = function(name, day, title, callback) {
+Post.edit = function(_id, callback) {
     mongodb.open(function (err, db) {
         if (err) {
             return callback(err);
@@ -154,9 +151,7 @@ Post.edit = function(name, day, title, callback) {
                 return callback(err);
             }
             collection.findOne({
-                'name': name,
-                'time.day': day,
-                'title': title
+                '_id': new ObjectID(_id)
             }, function (err, doc) {
                 mongodb.close();
                 if (err) {
@@ -169,7 +164,7 @@ Post.edit = function(name, day, title, callback) {
 };
 
 // 更新一篇文章及其相关信息
-Post.update = function(name, day, title, post, callback) {
+Post.update = function(_id, post, callback) {
     // 打开数据库
     mongodb.open(function (err, db) {
         if (err) {
@@ -182,9 +177,7 @@ Post.update = function(name, day, title, post, callback) {
             }
             // 更新文章内容
             collection.update({
-                'name': name,
-                'time.day': day,
-                'title': title
+                '_id': new ObjectID(_id)
             }, {
                 $set: {post: post}
             }, function (err) {
@@ -199,7 +192,7 @@ Post.update = function(name, day, title, post, callback) {
 };
 
 // 删除文章
-Post.remove = function(name, day, title, callback) {
+Post.remove = function(_id, callback) {
     // 打开数据库
     mongodb.open(function (err, db) {
         if (err) {
@@ -213,9 +206,7 @@ Post.remove = function(name, day, title, callback) {
             }
             // 根据用户名、日期和标题查找并删除一篇文章
             collection.remove({
-                'name': name,
-                'time.day': day,
-                'title': title
+                '_id': new ObjectID(_id)
             }, {
                 w: 1
             }, function (err) {
@@ -395,9 +386,7 @@ Post.reprint = function(reprint_from, reprint_to, callback) {
             }
             // 找到被转载的原文档
             collection.findOne({
-                'name': reprint_from.name,
-                'time.day': reprint_from.day,
-                'title': reprint_from.title
+                '_id': new ObjectID(reprint_from._id)
             }, function (err, doc) {
                 if (err) {
                     mongodb.close();
@@ -425,36 +414,31 @@ Post.reprint = function(reprint_from, reprint_to, callback) {
                 };
                 doc.pv = 0;
 
-                // 更新被转载原文档的reprint_info.reprint_to
-                collection.update({
-                    'name': reprint_from.name,
-                    'time.day': reprint_from.day,
-                    'title': reprint_from.title
-                }, {
-                    $push: {
-                        'reprint_info.reprint_to': {
-                            'name': doc.name,
-                            'day': time.day,
-                            'title': doc.title
-                        }
-                    }
-                }, function (err) {
-                    if (err) {
-                        mongodb.close();
-                        return callback(err);
-                    }
-                });
-
                 // 将转载后的副本修改后存入数据库，并返回存储的文档
                 collection.insert(doc, {
                     safe: true
                 }, function (err, post) {
-                    mongodb.close();
                     if (err) {
+                        mongodb.close();
                         return callback(err);
                     }
-                    console.log(post['ops'][0])
-                    callback(null, post['ops'][0])
+                    // 更新被转载原文档的reprint_info.reprint_to
+                    collection.update({
+                        '_id': new ObjectID(reprint_from._id)
+                    }, {
+                        $push: {
+                            'reprint_info.reprint_to': {
+                                '_id': post['ops'][0]._id
+                            }
+                        }
+                    }, function (err) {
+                        mongodb.close();
+                        if (err) {
+                            return callback(err);
+                        }
+                    });
+
+                    callback(null, post['ops'][0]);
                 });
             });
         });
