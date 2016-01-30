@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <title>Blog</title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <script charset="utf-8" src="/KindEditor/kindeditor-min.js"></script>
+    <script charset="utf-8" src="/KindEditor/lang/zh_CN.js"></script>
+    <script>
+        var editor;
+        var options = {
+            uploadJson: '/uploadImg',
+            items : [
+                'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic',
+                'underline', 'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                'insertorderedlist', 'insertunorderedlist', '|', 'emoticons', 'image', 'link']
+        };
+        KindEditor.ready(function(K) {
+            editor = K.create('textarea', options);
+        });
+    </script>
 </head>
 <body>
     <header>

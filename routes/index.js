@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var crypto = require('crypto');
 var multer = require('multer');
+var formidable = require('formidable');
 
 var User = require('../models/user.js');
 var Post = require('../models/post.js');
@@ -413,6 +414,28 @@ router.get('/reprint/:_id', function (req, res) {
             var url = encodeURI('/p/' + post._id);
             res.redirect(url);
         });
+    });
+});
+
+// kindeditor上传图片
+router.post('/uploadImg', function(req, res, next) {
+    var form = new formidable.IncomingForm();
+    form.keepExtensions = true;
+    console.log(__dirname);
+    form.uploadDir = __dirname + '/../public/images';
+    form.parse(req, function (err, fields, files) {
+        if (err) {
+            throw err;
+        }
+        var image = files.imgFile;
+        var path = image.path;
+        path = path.replace(/\\/g, '/');
+        var url = '/images' + path.substr(path.lastIndexOf('/'), path.length);
+        var info = {
+            "error": 0,
+            "url": url
+        };
+        res.send(info);
     });
 });
 
