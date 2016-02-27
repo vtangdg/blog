@@ -36,3 +36,4 @@ node_modules
 .idea
 public/images/*
 !public/images/.gitkeep
+log.txt
