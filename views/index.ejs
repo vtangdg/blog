@@ -1,27 +1,52 @@
 <%- include header %>
-<% posts.forEach(function (post, index) { %>
-    <p><h2><a href="/p/<%= post._id %>"><%= post.title %></a></h2></p>
-    <p class="info">
-        作者：<a href="/u/<%= post.name %>"><%= post.name %></a> |
-        日期：<%= post.time.minute %> |
-        标签：
-        <% post.tags.forEach(function (tag, index) { %>
-            <% if (tag) { %>
-                <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
-            <% } %>
-        <% }) %>
-    </p>
-    <p><%- post.post %></p>
-    <p class="info">
-        阅读：<%= post.pv %> |
-        评论：<%= post.comments.length %> |
-        转载：
-        <% if (post.reprint_info.reprint_to) { %>
-            <%= post.reprint_info.reprint_to.length %>
-        <% } else { %>
-            <%= 0 %>
-        <% } %>
-    </p>
-<% }) %>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-8 blog-main">
+            <% posts.forEach(function (post, index) { %>
+                <div class="blog-post">
+                    <h2 class="blog-post-title"><a href="/p/<%= post._id %>"><%= post.title %></a></h2>
+                    <p class="blog-post-meta">
+                        作者：<a href="/u/<%= post.name %>"><%= post.name %></a> |
+                        日期：<%= post.time.minute %> |
+                        标签：
+                        <% post.tags.forEach(function (tag, index) { %>
+                            <% if (tag) { %>
+                                <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
+                            <% } %>
+                        <% }) %>
+                    </p>
+                    <p><%- post.post %></p>
+                    <p class="blog-post-meta">
+                        阅读：<%= post.pv %> |
+                        评论：<%= post.comments.length %> |
+                        转载：
+                        <% if (post.reprint_info.reprint_to) { %>
+                            <%= post.reprint_info.reprint_to.length %>
+                        <% } else { %>
+                            <%= 0 %>
+                        <% } %>
+                    </p>
+                </div>
+
+            <% }) %>
+        </div>
+        <div class="col-sm-3 col-sm-offset-1 blog-sidebar">
+            <div class="sidebar-module sidebar-module-inset">
+              <h4>About</h4>
+              <p>Etiam porta <em>sem malesuada magna</em> mollis euismod. Cras mattis consectetur purus sit amet fermentum. Aenean lacinia bibendum nulla sed consectetur.</p>
+            </div>
+            <div class="sidebar-module">
+              <h4>友情链接</h4>
+              <ol class="list-unstyled">
+                <li><a href="https://github.com/">GitHub</a></li>
+                <li><a href="http://blog.csdn.net/">CSDN</a></li>
+                <li><a href="http://www.cnblogs.com/">博客园</a></li>
+              </ol>
+            </div>
+        </div>
+
+    </div>
+
+</div>
 <%- include paging %>
 <%- include footer %>
