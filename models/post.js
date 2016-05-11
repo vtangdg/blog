@@ -32,6 +32,7 @@ Post.prototype.save = function(callback) {
         tags: this.tags,
         post: this.post,
         comments: [],
+        reprint: false,
         reprint_info: {},
         pv: 0
     };
@@ -128,6 +129,36 @@ Post.getOne = function(_id, callback) {
     ], function (err, doc) {
         mongodb.close();
         callback(err, doc);
+    });
+};
+
+// 获取热门文章
+Post.getHot = function(callback) {
+    async.waterfall([
+        function (cb) {
+            mongodb.open(function (err, db) {
+                cb(err, db);
+            });
+        },
+        function (db, cb) {
+            db.collection('posts', function (err, collection) {
+                cb(err, collection);
+            });
+        },
+        function (collection, cb) {
+            var query = {};
+
+            //根据 query 对象查询文章
+            collection.find(query).sort({
+                pv: -1
+            }).toArray(function (err, docs) {
+                //成功！以数组形式返回查询的结果
+                callback(err, docs);
+            });
+        }
+    ], function (err, docs) {
+        mongodb.close();
+        callback(err, docs);
     });
 };
 
@@ -409,8 +440,10 @@ Post.reprint = function(reprint_from, reprint_to, callback) {
             // 构造“新”文章对象
             doc.name = reprint_to.name;
             doc.time = time;
+            // 转载标识
+            doc.reprint = true;
             // 新标题，如果原文章是转载的话，标题不变；否则加上'[转载]'字样
-            doc.title = (doc.title.search(/\[转载\]/) > -1 ? doc.title : '[转载]' + doc.title);
+            //doc.title = (doc.title.search(/\[转载\]/) > -1 ? doc.title : '[转载]' + doc.title);
             doc.comments = [];
             doc.reprint_info = {
                 'reprint_from': reprint_from

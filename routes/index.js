@@ -158,7 +158,7 @@ router.post('/post', checkLogin);
 router.post('/post', function (req, res) {
     var currentUser = req.session.user,
         tags = [req.body.tag1, req.body.tag2, req.body.tag3],
-        post = new Post(currentUser.name, req.body.title, tags, req.body.post);
+        post = new Post(currentUser.name, req.body.title, tags, req.body.editor);
     post.save(function (err) {
         if (err) {
             req.flash('error', err);
@@ -439,6 +439,21 @@ router.post('/uploadImg', function(req, res, next) {
     });
 });
 
+// 热门文章
+router.get('/hot', function(req, res) {
+    Post.getHot(function(err, posts) {
+        if (err) {
+            posts = [];
+        }
+        res.render('hot', {
+            posts: posts,
+            user: req.session.user,
+            success: req.flash('success').toString(),
+            error: req.flash('error').toString()
+        });
+
+    });
+});
 // 404
 router.use(function (req, res) {
     res.render('404');

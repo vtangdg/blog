@@ -1,5 +1,34 @@
 <%- include header %>
-<% posts.forEach(function (tag, index) { %>
-    <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
-<% }) %>
+<div class="blog-banner">
+    <div class="container">
+        <ul class="clearfix">
+            <li>
+                <a href="/">首页</a>
+            </li>
+            <% if (user) { %>
+            <li>
+                <a href="/post">写新文章</a>
+            </li>
+            <li class="active">
+                <a href="/tags">文章标签</a>
+            </li>
+            <li>
+                <a href="/archive">文章存档</a>
+            </li>
+            <% } %>
+            <li>
+                <a href="/hot">热门文章</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="blog-tags">
+        <% posts.forEach(function (tag, index) { %>
+            <% if (tag) { %>
+            <a class="btn btn-info btn-lg" href="/tags/<%= tag %>"><%= tag %></a>
+            <% } %>
+        <% }) %>
+    </div>
+</div>
 <%- include footer %>

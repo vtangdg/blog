@@ -6,13 +6,16 @@
     <link rel="stylesheet" href="/stylesheets/bootstrap.min.css">
     <link rel="stylesheet/less" href="/stylesheets/style.less">
     <script src="/javascripts/jquery-1.11.2.min.js"></script>
-    <script src="/javascripts/bootstrap.min.js"></script>
+    <script src="/javascripts/modal.js"></script>
     <script src="/javascripts/less.min.js"></script>
     <script src="/KindEditor/kindeditor-min.js"></script>
     <script src="/KindEditor/lang/zh_CN.js"></script>
     <script>
         var editor;
         var options = {
+            minWidth: '600px',
+            width: '600px',
+            height: '300px',
             uploadJson: '/uploadImg',
             items : [
                 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold', 'italic',
@@ -25,6 +28,27 @@
     </script>
 </head>
 <body>
+    <!-- 登录框 -->
+    <div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <form action="/login" method="POST" class="form-horizontal">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <h4 class="modal-title" id="myModalLabel">账号登录</h4>
+            </div>
+            <div class="modal-body">
+              用户名：<input type="text" name="name" class="form-control" autofocus><br>
+              密码：  <input type="password" name="password" class="form-control"><br>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-info">登录</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
     <div class="blog-toolbar">
         <div class="container">
             <div class="row clearfix">
@@ -32,10 +56,10 @@
                     <a href="/">博客</a>
                 </div>
                 <div class="col-md-3 col-md-offset-3">
-                    <form action="/search" method="GET">
+                    <form action="/search" method="GET" id="blog-search-form">
                         <div class="input-group">
                             <input type="text" class="form-control" name="keyword" placeholder="Search">
-                            <span class="input-group-addon" onclick="window.location.href='/search'">
+                            <span class="input-group-addon" onclick="$('#blog-search-form').submit()">
                                 <i class="glyphicon glyphicon-search"></i>
                             </span>
                         </div>
@@ -49,36 +73,13 @@
                         |
                         <a href="/logout">退出</a>
                     <% } else { %>
-                    <a href="/login">登录</a>
+                    <a data-toggle="modal" href="#login-modal">登录</a>
                     |
                     <a href="/reg">注册</a>
                     <% } %>
                 </div>
             </div>
 
-        </div>
-    </div>
-    <div class="blog-banner">
-        <div class="container">
-            <ul class="clearfix">
-                <li class="active">
-                    <a href="/">首页</a>
-                </li>
-                <% if (user) { %>
-                <li>
-                    <a href="/post">写新文章</a>
-                </li>
-                <li>
-                    <a href="/tags">文章标签</a>
-                </li>
-                <li>
-                    <a href="/archive">文章存档</a>
-                </li>
-                <% } %>
-                <li>
-                    <a href="/hot">热门文章</a>
-                </li>
-            </ul>
         </div>
     </div>
 

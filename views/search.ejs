@@ -1,12 +1,24 @@
 <%- include header %>
-<ul class="archive">
-<% var lastYear = 0 %>
-<% posts.forEach(function (post, index) { %>
-    <% if(lastYear != post.time.year) { %>
-        <li><h3><%= post.time.year %></h3></li>
-    <% lastYear = post.time.year } %>
-        <li><time><%= post.time.day %></time></li>
-        <li><a href="/p/<%= post._id %>"><%= post.title %></a></li>
-<% }) %>
-</ul>
+<div class="container">
+    <div class="blog-search">
+        <h1>搜索结果：</h1>
+        <ul class="archive">
+        <% if (!posts.length) { %>
+            搜索内容不存在！
+        <%} %>
+        <% var lastYear = 0; lastDay = '' %>
+        <% posts.forEach(function (post, index) { %>
+            <% if (lastYear !== post.time.year) { %>
+            <li class="year"><h3><%= post.time.year %></h3></li>
+            <% lastYear = post.time.year } %>
+
+            <% if (lastDay !== post.time.day) { %>
+            <li class="day"><%= post.time.day %></li>
+            <% lastDay = post.time.day } %>
+
+            <li class="title"><a href="/p/<%= post._id %>"><%= post.title %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+</div>
 <%- include footer %>

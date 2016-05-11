@@ -2,31 +2,20 @@
  * 全局样式
  */
  @base-color: #428bca;
+ @secondary-color: #5bc0de;
 * {
   padding: 0;
   margin: 0;
 }
 body {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  //font-family: Georgia, "Microsoft YaHei", Times, serif;
   color: #555;
 }
 ul {
   list-style: none;
 }
-a {text-decoration: none}
-a:hover {text-decoration: none;}
-h1, .h1,
-h2, .h2,
-h3, .h3,
-h4, .h4,
-h5, .h5,
-h6, .h6 {
-  margin-top: 0;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-weight: normal;
-  color: #333;
-}
 
+a:hover {text-decoration: none;}
 
 /*
  * 重写bootstrap
@@ -39,9 +28,7 @@ h6, .h6 {
 }
 
 
-/*
- * 头部
- */
+// 头部
 .blog-toolbar {
     @height: 40px;
     height: @height;
@@ -63,7 +50,7 @@ h6, .h6 {
       }
     }
     .input-group-addon {
-      background-color: rgba(255, 255, 255, 0.7);
+      background-color: @secondary-color;
       border: none;
     }
     .user-info {
@@ -98,6 +85,29 @@ h6, .h6 {
 .blog-main {
   font-size: 18px;
   line-height: 1.5;
+
+  .blog-post {
+    margin-bottom: 60px;
+  }
+  .blog-post-title {
+    margin-bottom: 5px;
+    font-size: 24px;
+
+    .icon {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+    }
+    .icon-reprint {
+      background: url(../icons/ico_Repost.gif) no-repeat 0 0;
+      vertical-align: middle;
+      background-size: contain;
+    }
+  }
+  .blog-post-meta {
+    margin-bottom: 20px;
+    color: #999;
+  }
 }
 
 /* Sidebar modules for boxing content */
@@ -117,33 +127,19 @@ h6, .h6 {
 }
 
 
-/* Pagination */
+// 分页
 .pager {
   margin-bottom: 60px;
   text-align: left;
-}
-.pager > li > a {
-  width: 140px;
-  padding: 10px 20px;
-  text-align: center;
-  border-radius: 30px;
-}
-
-
-/*
- * Blog posts
- */
-
-.blog-post {
-  margin-bottom: 60px;
-}
-.blog-post-title {
-  margin-bottom: 5px;
-  font-size: 40px;
-}
-.blog-post-meta {
-  margin-bottom: 20px;
-  color: #999;
+  > li {
+    margin-right: 20px;
+    > a {
+      width: 140px;
+      padding: 10px 20px;
+      text-align: center;
+      border-radius: 30px;
+    }
+  }
 }
 
 
@@ -153,6 +149,7 @@ h6, .h6 {
 
 .blog-footer {
   padding: 40px 0;
+  margin-top: 20px;
   color: #999;
   text-align: center;
   background-color: #f9f9f9;
@@ -161,3 +158,80 @@ h6, .h6 {
 .blog-footer p:last-child {
   margin-bottom: 0;
 }
+/*================== 发表文章页*/
+.post-article {
+  .tags {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    input {
+      width: 100px;
+    }
+  }
+}
+/*end====*/
+/*================== 文章页*/
+.article {
+  margin-top: 40px;
+
+  // comment.ejs
+  input {
+    height: 30px;
+    margin-right: 50px;
+  }
+  input[name="name"] {
+    background-color: #ddd;
+  }
+  .tips {
+    margin-top: 20px;
+    font-size: 24px;
+    color: red;
+  }
+}
+
+/*end====*/
+/*================== 标签页*/
+.blog-tags {
+  min-height: 400px;
+  margin-top: 50px;
+
+  a {
+    margin-right: 20px;
+  }
+}
+/*end====*/
+/*================== 存档页*/
+.blog-archive {
+  .year {
+    margin-bottom: 20px;
+    border-bottom: 4px solid #ddd;
+    h3 {
+      font-size: 28px;
+    }
+  }
+  .day {
+    margin-bottom: 2px;
+    padding-left: 10px;
+    font-size: 20px;
+  }
+
+  .title > a {
+    display: inline-block;
+    padding: 2px 20px;
+  }
+}
+/*end====*/
+/*================== 用户文章页*/
+.blog-user {
+  h1 {
+    border-bottom: 4px solid #ddd;
+  }
+}
+/*end====*/
+/*================== 搜索结果页*/
+.blog-search {
+  min-height: 400px;
+  h1 {
+    border-bottom: 4px solid #ddd;
+  }
+}
+/*end====*/

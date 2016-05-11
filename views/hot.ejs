@@ -1,9 +1,8 @@
 <%- include header %>
-
 <div class="blog-banner">
     <div class="container">
         <ul class="clearfix">
-            <li class="active">
+            <li>
                 <a href="/">首页</a>
             </li>
             <% if (user) { %>
@@ -17,16 +16,17 @@
                 <a href="/archive">文章存档</a>
             </li>
             <% } %>
-            <li>
+            <li class="active">
                 <a href="/hot">热门文章</a>
             </li>
         </ul>
     </div>
-</div><!-- /.blog-banner -->
+</div>
 <div class="container">
     <div class="row">
         <div class="col-sm-8 blog-main">
             <% posts.forEach(function (post, index) { %>
+                <% if (index < 10) { %>
                 <div class="blog-post">
                     <h2 class="blog-post-title">
                         <a href="/p/<%= post._id %>">
@@ -42,7 +42,7 @@
                         标签：
                         <% post.tags.forEach(function (tag, index) { %>
                             <% if (tag) { %>
-                                <a class="tag btn btn-info btn-xs" href="/tags/<%= tag %>"><%= tag %></a>
+                                <a class="tag" href="/tags/<%= tag %>"><%= tag %></a>
                             <% } %>
                         <% }) %>
                     </p>
@@ -58,13 +58,11 @@
                         <% } %>
                     </p>
                 </div>
+                <%}%>
 
             <% }) %>
-
-            <%- include paging %>
         </div><!-- /.blog-main -->
         <%- include sidebar %>
     </div>
 </div>
-
 <%- include footer %>

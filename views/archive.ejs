@@ -1,12 +1,43 @@
 <%- include header %>
-<ul class="archive">
-<% var lastYear = 0 %>
-<% posts.forEach(function (post, index) { %>
-    <% if (lastYear !== post.time.year) { %>
-        <li><h3><%= post.time.year %></h3></li>
-    <% lastYear = post.time.year } %>
-    <li><time><%= post.time.day %></time></li>
-    <li><a href="/p/<%= post._id %>"><%= post.title %></a></li>
-    <% }) %>
-</ul>
+<div class="blog-banner">
+    <div class="container">
+        <ul class="clearfix">
+            <li>
+                <a href="/">首页</a>
+            </li>
+            <% if (user) { %>
+            <li>
+                <a href="/post">写新文章</a>
+            </li>
+            <li>
+                <a href="/tags">文章标签</a>
+            </li>
+            <li class="active">
+                <a href="/archive">文章存档</a>
+            </li>
+            <% } %>
+            <li>
+                <a href="/hot">热门文章</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="container">
+    <div class="blog-archive">
+        <ul class="archive">
+        <% var lastYear = 0; lastDay = '' %>
+        <% posts.forEach(function (post, index) { %>
+            <% if (lastYear !== post.time.year) { %>
+            <li class="year"><h3><%= post.time.year %></h3></li>
+            <% lastYear = post.time.year } %>
+
+            <% if (lastDay !== post.time.day) { %>
+            <li class="day"><%= post.time.day %></li>
+            <% lastDay = post.time.day } %>
+
+            <li class="title"><a href="/p/<%= post._id %>"><%= post.title %></a></li>
+            <% }) %>
+        </ul>
+    </div>
+</div>
 <%- include footer %>
