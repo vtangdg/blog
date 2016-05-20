@@ -64,14 +64,14 @@ router.get('/reg', function(req, res) {
 });
 router.post('/reg', checkNotLogin);
 router.post('/reg', function(req, res) {
-    var name = req.body.name,
-        password = req.body.password,
-        password_repeat = req.body['password-repeat'],
+    var name = req.body['reg_username'],
+        password = req.body['reg_password'],
+        password_repeat = req.body['reg_re-password'],
         email = req.body.email;
 
     // 检验用户两次输入是否一致
     if (password_repeat !== password) {
-        req.flash('error', '两次输入的密码不一致');
+        req.flash('error', '两次输入的密码不一致!');
         return res.redirect('/reg');
     }
 
@@ -130,12 +130,12 @@ router.post('/login', function(req, res) {
     User.get(req.body.name, function(err, user) {
         if (!user) {
             req.flash('error', '用户不存在');
-            return res.redirect('/login');
+            return res.redirect('/');
         }
         // 检查密码是否一致
         if (password !== user.password) {
             req.flash('error', '密码错误');
-            return res.redirect('/login');
+            return res.redirect('/');
         }
         // 密码匹配，信息存入session
         req.session.user = user;
@@ -363,7 +363,7 @@ router.get('/tags/:tag', function (req, res) {
             return res.redirect('/');
         }
         res.render('tag', {
-            title: 'TAG:' + req.params.tag,
+            title: '标签:' + req.params.tag,
             posts: posts,
             user: req.session.user,
             success: req.flash('success').toString(),
@@ -454,6 +454,48 @@ router.get('/hot', function(req, res) {
 
     });
 });
+
+// 修改密码
+router.get('/mod', checkLogin);
+router.get('/mod', function(req, res) {
+    res.render('modify_password', {
+        title: '修改密码',
+        user: req.session.user,
+        success: req.flash('success').toString(),
+        error: req.flash('error').toString()
+    });
+});
+router.post('/mod', checkLogin);
+router.post('/mod', function(req, res) {
+    var oldPass = req.body['mod_password'],
+        md5OldPass = createMd5(oldPass),
+        newPass = req.body['mod_new-password'],
+        md5NewPass = createMd5(newPass),
+        rePass = req.body['mod_re-password'];
+
+    if (req.session.user.password !== md5OldPass) {
+        req.flash('error', '旧密码不正确！');
+        return res.redirect('/mod');
+    }
+
+    // 检查新密码是否一致
+    if (newPass !== rePass) {
+        req.flash('error', '新密码不一致！');
+        return res.redirect('/mod');
+    }
+
+    User.update(req.session.user._id, md5NewPass, function(err, user) {
+        if (err) {
+            req.flash('error', err);
+            return res.redirect('/mod');
+        }
+
+        if (user) {
+            req.flash('success', '修改成功！');
+            return res.redirect('/');
+        }
+    });
+});
 // 404
 router.use(function (req, res) {
     res.render('404');
@@ -477,4 +519,8 @@ function checkNotLogin(req, res, next) {
     next();
 }
 
+// 防止密码修改里多次使用md5 报错：TypeError: HashUpdate fail
+function createMd5 (data) {
+    return crypto.createHash('md5').update(data).digest('hex');
+}
 module.exports = router;

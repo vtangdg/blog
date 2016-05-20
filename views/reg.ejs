@@ -1,9 +1,29 @@
 <%- include header %>
-<form method="post">
-    用户名：<input type="text" name="name"><br>
-    密码：<input type="password" name="password"><br>
-    确认密码：<input type="password" name="password-repeat"><br>
-    邮箱：<input type="email" name="email"><br>
-    <input type="submit" value="注册">
-</form>
+<div class="container mt20">
+  <form method="post" class="form-horizontal">
+    <div class="err"><%- error %></div>
+    <div class="form-group">
+      <label for="reg_username">用户名</label>
+      <input type="text" class="form-control" id="reg_username" name="reg_username">
+    </div>
+    <div class="form-group">
+      <label for="reg_password">密码</label>
+      <input type="password" class="form-control" id="reg_password" name="reg_password">
+    </div>
+    <div class="form-group">
+      <label for="reg_re-password">确认密码</label>
+      <input type="password" class="form-control" id="reg_re-password" name="reg_re-password">
+    </div>
+    <div class="form-group">
+      <label for="reg_email">邮箱</label>
+      <input type="email" class="form-control" id="reg_email" name="reg_email">
+    </div>
+    <div class="form-group">
+      <div class="col-xs-5">
+        <button type="submit" class="btn btn-info">注册</button>
+      </div>
+    </div>
+  </form>
+</div>
+
 <%- include footer %>

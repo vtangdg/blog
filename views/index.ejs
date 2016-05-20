@@ -10,13 +10,13 @@
             <li>
                 <a href="/post">写新文章</a>
             </li>
+            <% } %>
             <li>
                 <a href="/tags">文章标签</a>
             </li>
             <li>
                 <a href="/archive">文章存档</a>
             </li>
-            <% } %>
             <li>
                 <a href="/hot">热门文章</a>
             </li>
@@ -46,7 +46,7 @@
                             <% } %>
                         <% }) %>
                     </p>
-                    <p><%- post.post %></p>
+                    <p class="blog-post-content"><%- post.post %></p>
                     <p class="blog-post-meta">
                         阅读：<%= post.pv %> |
                         评论：<%= post.comments.length %> |

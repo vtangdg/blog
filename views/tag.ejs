@@ -1,12 +1,43 @@
 <%- include header %>
-<ul class="archive">
-<% var lastYear = 0 %>
-<% posts.forEach(function (post, index) { %>
-    <% if (lastYear != post.time.year) { %>
-        <li><h3><%= post.time.year %></h3></li>
-    <% lastYear = post.time.year } %>
-        <li><time><%= post.time.day %></time></li>
-        <li><a href="/p/<%= post._id %>"><%= post.title %></a></li>
-<% }) %>
-</ul>
+<div class="container blog-tag">
+    <h1><%- title %></h1>
+    <div class="row">
+        <div class="col-sm-8 blog-main">
+            <% posts.forEach(function (post, index) { %>
+                <div class="blog-post">
+                    <h2 class="blog-post-title">
+                        <a href="/p/<%= post._id %>">
+                        <% if (post.reprint) { %>
+                            <span class="icon icon-reprint"></span>
+                        <% } %>
+                            <%= post.title %>
+                        </a>
+                    </h2>
+                    <p class="blog-post-meta">
+                        作者：<a href="/u/<%= post.name %>"><%= post.name %></a> |
+                        日期：<%= post.time.minute %> |
+                        标签：
+                        <% post.tags.forEach(function (tag, index) { %>
+                            <% if (tag) { %>
+                                <a class="tag btn btn-info btn-xs" href="/tags/<%= tag %>"><%= tag %></a>
+                            <% } %>
+                        <% }) %>
+                    </p>
+                    <p><%- post.post %></p>
+                    <p class="blog-post-meta">
+                        阅读：<%= post.pv %> |
+                        评论：<%= post.comments.length %> |
+                        转载：
+                        <% if (post.reprint_info.reprint_to) { %>
+                            <%= post.reprint_info.reprint_to.length %>
+                        <% } else { %>
+                            <%= 0 %>
+                        <% } %>
+                    </p>
+                </div>
+
+            <% }) %>
+        </div><!-- /.blog-main -->
+    </div>
+</div>
 <%- include footer %>

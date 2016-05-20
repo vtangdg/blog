@@ -1,5 +1,6 @@
 var async = require('async');
 var mongodb = require('./db');
+var ObjectID = require('mongodb').ObjectID;
 
 function User(user) {
     this.name = user.name;
@@ -72,4 +73,31 @@ User.get = function(name, callback) {
     });
 };
 
+// 更新用户信息
+User.update = function(_id, newPassword, callback) {
+    async.waterfall([
+        function (cb) {
+            mongodb.open(function (err, db) {
+                cb(err, db);
+            });
+        },
+        function (db, cb) {
+            db.collection('users', function (err, collection) {
+                cb(err, collection);
+            });
+        },
+        function (collection, cb) {
+            collection.updateOne({
+                '_id': new ObjectID(_id)
+            }, {
+                $set:{password: newPassword}
+            }, function (err, user) {
+                cb(err, user);
+            });
+        }
+    ], function (err, user) {
+        mongodb.close();
+        callback(err, user);
+    });
+}
 
